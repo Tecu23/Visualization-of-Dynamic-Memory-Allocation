@@ -1,4 +1,6 @@
-Title: Visualization of Dynamic Memory Allocation
+    Title: 
+    
+    Visualization of Dynamic Memory Allocation
 
 
     Functionalities:
