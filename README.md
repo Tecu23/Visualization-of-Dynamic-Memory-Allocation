@@ -8,8 +8,7 @@
         Given some c code that uses multiple calls to malloc/calloc and free it emulates it using the unicorn engine and retrieves
     the memory location that was just allocated or freed to better understand the functionality of those calls.
 
-    - usign unicorn-engine X86 emulator from:
-        https://github.com/unicorn-engine/unicorn
+
 
 
 
@@ -23,3 +22,17 @@ Similar Projects:
 
     - A Tool for Visualizing the Execution of Programs and Stack Traces Especially Suited for Novice Programmers
         https://www.scitepress.org/papers/2017/63369/63369.pdf
+
+
+
+Refences:
+
+    - usign unicorn-engine X86 emulator from:
+    https://github.com/unicorn-engine/unicorn
+
+    - online assembler to assemble the code in code.asm
+    http://shell-storm.org/online/Online-Assembler-and-Disassembler/
+
+    - for the visualization I used  the missingno library
+        Bilogur, (2018). Missingno: a missing data visualization suite. Journal of Open Source Software, 3(22), 547, 
+    https://doi.org/10.21105/joss.00547

@@ -7,8 +7,8 @@ class Heap:
         self.heap_pointer = self.HEAP_ADDRESS + self.HEAP_SIZE - 1;
     
     def allocate(self,size):
-        # first we alocate the space iteratively starting from heap_pointer to 0
-        if self.heap_pointer - size > 0:
+        # first we alocate the space iteratively starting from heap_pointer to the HEAP_ADDRESS
+        if self.heap_pointer - size > self.HEAP_ADDRESS:
 
             return_address = self.heap_pointer
             self.heap_pointer -= size
@@ -29,14 +29,32 @@ class Heap:
                         key -= size;
                         self.freed_memory_list[key] -= size
 
-                    self.memory_list[key] = size
+                    self.memory_list[return_key] = size
 
                     return return_key
-        # if there is no space to allocate the object the we return 0
+        # if there is no space to allocate the object the we return None
         return None
 
     def print(self):
-        print(self.heap_pointer)
+        print("POINTER TO THE HEAP",hex(self.heap_pointer))
 
+        print("MEMORY LIST \n")
         for item in self.memory_list:
-            print(item ,"/", self.memory_list[item] ,"/")
+            print(hex(item) ,"-", self.memory_list[item])
+        print()
+
+        print("FREED MEMORY LIST \n")
+        for item in self.freed_memory_list:
+            print(hex(item) ,"-", self.freed_memory_list[item])
+        print()
+
+
+
+    def deallocate(self,address):
+        
+        for key in self.memory_list:
+            if key == address:
+                self.freed_memory_list[key] = self.memory_list[key]
+                self.memory_list.pop(key)
+                return 0
+        return -1
