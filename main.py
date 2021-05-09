@@ -29,8 +29,6 @@ def hook_code(mu, address, size, user_data):
   print('>>> Tracing instruction at 0x%x, instruction size = 0x%x' %(address, size)) 
 
   if address in MALLOC_ADDRESSES:
-
-    print("THIS IS A MALLOC CALL")
     # skipping the instruction
     mu.reg_write(UC_X86_REG_RIP,address+size)
     
@@ -47,11 +45,7 @@ def hook_code(mu, address, size, user_data):
       # now putting that allocated address in rax, mirroring a call to malloc
       mu.reg_write(UC_X86_REG_RAX,allocated_address)
 
-    h.print()
-
   if address in FREE_ADDRESSES:
-
-    print("This is a FREE CALL")
     # skipping the instruction
     mu.reg_write(UC_X86_REG_RIP,address+size)
 
@@ -67,9 +61,6 @@ def hook_code(mu, address, size, user_data):
     else:
       # else we put 0 in RAX to be put in the stack
       mu.reg_write(UC_X86_REG_RAX,new_address)
-
-    h.print()
-
     
 
 print("Emulate i386 code")
