@@ -27,7 +27,9 @@ class Heap:
                         self.freed_memory_list.pop(key)
                     else:
                         key -= size;
-                        self.freed_memory_list[key] -= size
+                        remaining_size = self.freed_memory_list[return_key] - size;
+                        self.freed_memory_list.pop(return_key)
+                        self.freed_memory_list[key] = remaining_size
 
                     self.memory_list[return_key] = size
 
