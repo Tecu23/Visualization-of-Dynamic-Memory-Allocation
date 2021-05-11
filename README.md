@@ -5,8 +5,11 @@
 
     Functionalities:
 
-        Given some assembly code that simulates the calls to malloc and free from a C program, the program simulates those calls calling allocate/ deallocate
-    methods from the heap object that we created and return the position that those calls created. Then using the arcade library I created the window that shows the 
+        - simulating the heap memory in a program 
+        - seeing the allocation and deallocation of blocks in real-time
+        - seeing the addreses where the memory has been allocated/freed and the size
+
+    All to better understand how the memory is being used in a real program 
 
 
 

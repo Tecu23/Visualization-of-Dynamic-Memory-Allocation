@@ -1,13 +1,17 @@
 mov rbp,rsp
+
 mov edi, 10
 call 0x31       ;malloc
 mov [rbp-8], rax
+
 mov edi, 24
 call 0x31       ;malloc
 mov [rbp-16], rax
+
 mov edi, 36
 call 0x31       ;malloc
 mov [rbp-24], rax
+
 mov edi, 25
 call 0x31       ;malloc
 mov [rbp-32], rax
@@ -20,9 +24,3 @@ mov [rbp-32], rax
 mov edi, 20
 call 0x31       ;malloc
 mov [rbp-40], rax
-
-mov rax,[rbp-8]
-mov rbx,[rbp-16]
-mov rcx,[rbp-24]
-mov rdx,[rbp-32]
-mov r10,[rbp-40]
