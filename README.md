@@ -5,8 +5,8 @@
 
     Functionalities:
 
-        Given some c code that uses multiple calls to malloc/calloc and free it emulates it using the unicorn engine and retrieves
-    the memory location that was just allocated or freed to better understand the functionality of those calls.
+        Given some assembly code that simulates the calls to malloc and free from a C program, the program simulates those calls calling allocate/ deallocate
+    methods from the heap object that we created and return the position that those calls created. Then using the arcade library I created the window that shows the 
 
 
 
@@ -27,12 +27,11 @@ Similar Projects:
 
 Refences:
 
-    - usign unicorn-engine X86 emulator from:
+    - usign unicorn-engine X86 emulator to emulate the assembly code 
     https://github.com/unicorn-engine/unicorn
 
     - online assembler to assemble the code in code.asm
     http://shell-storm.org/online/Online-Assembler-and-Disassembler/
 
-    - for the visualization I used  the missingno library
-        Bilogur, (2018). Missingno: a missing data visualization suite. Journal of Open Source Software, 3(22), 547, 
-    https://doi.org/10.21105/joss.00547
+    - for visualization i used the arcade library
+    https://arcade.academy/index.html

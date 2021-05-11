@@ -15,23 +15,25 @@ class MyGame(arcade.Window):
     def __init__(self, width, height):
         
         super().__init__(width, height)
-        arcade.set_background_color(arcade.color.AMAZON)
-
-    def setup(self):
-        # Set up your game here
-        pass
-        
+        arcade.set_background_color((42,43,45))
 
     def on_draw(self):
         """ Render the screen. """
-       
-        self.draw_big_rectangle(self.h.HEAP_SIZE)
         
+        self.update_logic(self.h.HEAP_SIZE, self.h.memory_list, self.h.freed_memory_list, "", 0)
+    
 
     def update(self, delta_time):
-        """ All the logic to move, and the game logic goes here """
+
+        """ All the logic to allocate/deallocate the memory with the unicorn engine, and the game logic goes here """
+
         def hook_code(mu, address, size, user_data):
+
             print('>>> Tracing instruction at 0x%x, instruction size = 0x%x' %(address, size)) 
+
+            # when the first instruction is called, we call the function to initialize the image on the screen
+            if address == 0x400000:
+                self.update_logic(self.h.HEAP_SIZE, self.h.memory_list, self.h.freed_memory_list, " ", 0)
 
             if address in MALLOC_ADDRESSES:
                 # skipping the instruction
@@ -49,6 +51,7 @@ class MyGame(arcade.Window):
                 else:
                     # now putting that allocated address in rax, mirroring a call to malloc
                     mu.reg_write(UC_X86_REG_RAX,allocated_address)
+                self.update_logic(self.h.HEAP_SIZE, self.h.memory_list, self.h.freed_memory_list,"Allocation",allocated_address)
 
             if address in FREE_ADDRESSES:
                 # skipping the instruction
@@ -66,13 +69,12 @@ class MyGame(arcade.Window):
                 else:
                 # else we put 0 in RAX to be put in the stack
                     mu.reg_write(UC_X86_REG_RAX,new_address)
-            self.update_logic(self.h.HEAP_SIZE, self.h.memory_list, self.h.freed_memory_list)
 
-            time.sleep(1)
+                self.update_logic(self.h.HEAP_SIZE, self.h.memory_list, self.h.freed_memory_list,"Deallocation",free_address)
 
-        print("Emulate i386 code")
+            time.sleep(0.3)
         try:
-            # Initialize emulator in X86-32bit mode
+            # Initialize emulator in X86-64bit mode
             mu = Uc(UC_ARCH_X86, UC_MODE_64)
 
             # map 2MB memory for the code to be emulated and 4MB to the stack
@@ -90,63 +92,47 @@ class MyGame(arcade.Window):
             # emulate code in infinite time & unlimited instructions
             mu.emu_start(CODE_ADDRESS, CODE_ADDRESS + len(X86_CODE64))
 
-            print("Emulation done. Below is the CPU context")
-
-            r_rsp = mu.reg_read(UC_X86_REG_RSP)
-            r_rax = mu.reg_read(UC_X86_REG_RAX)
-            r_rbx = mu.reg_read(UC_X86_REG_RBX)
-            r_rcx = mu.reg_read(UC_X86_REG_RCX)
-            r_rdx = mu.reg_read(UC_X86_REG_RDX)
-            r_10  = mu.reg_read(UC_X86_REG_R10)
-
-            
-            print(">>> RSP = 0x%x" %r_rsp)
-            print(">>> RAX = 0x%x" %r_rax)
-            print(">>> RBX = 0x%x" %r_rbx)
-            print(">>> RCX = 0x%x" %r_rcx)
-            print(">>> RDX = 0x%x" %r_rdx)
-            print(">>> R10 = 0x%x" %r_10)
-
             exit()
             
         except UcError as e:
             print("ERROR: %s" % e)
         
-
-
-    def draw_big_rectangle(self,size):
-
-        arcade.start_render()
-        arcade.draw_lrtb_rectangle_outline(200, 400, 800, 100, arcade.csscolor.BLACK)
-        for i in range(0,size):
-            arcade.draw_lrtb_rectangle_outline(200, 400, 100+(i+1)*7, 100+i*7, arcade.csscolor.WHITE)
-
-        arcade.finish_render()
-
-    def update_logic(self,size,memory_list,freed_memory_list):
+    def update_logic(self,size,memory_list,freed_memory_list,string,address):
 
         arcade.start_render()
         
-        arcade.draw_lrtb_rectangle_outline(200, 400, 800, 100, arcade.csscolor.BLACK)
+        if string == 'Allocation' :
+            text = "A block of size " + str(memory_list[address]) + " has been alocated, starting at address "+ str(hex(address))
+        elif string == 'Deallocation':
+            text = "A block of size " + str(freed_memory_list[address]) + " has been deallocated, starting at address " + str(hex(address))
+        else: 
+            text = ''
+
+        starting_address = self.h.HEAP_ADDRESS + self.h.HEAP_SIZE - 1;
+        end_address = self.h.HEAP_ADDRESS;
+
+        arcade.draw_text(text, 100, 850, (45,168,216))
+        arcade.draw_text(str(hex(starting_address)),175,100,(45,168,216))
+        arcade.draw_text(str(hex(end_address)), 175, 790, (45,168,216))
+
         for i in range(0,size):
-            arcade.draw_lrtb_rectangle_outline(200, 400, 100+(i+1)*7, 100+i*7, arcade.csscolor.WHITE)
+            arcade.draw_lrtb_rectangle_outline(250, 500, 100+(i+1)*7, 100+i*7, arcade.csscolor.WHITE)
 
         for key in memory_list:
             starting_index = size - (key - self.h.HEAP_ADDRESS) - 1
             for i in range(0,memory_list[key]):
-                arcade.draw_lrtb_rectangle_filled(200, 400, 100+(starting_index+i+1)*7, 100+(starting_index+i)*7, arcade.csscolor.LIGHT_SKY_BLUE)
+                arcade.draw_lrtb_rectangle_filled(250, 500, 100+(starting_index+i+1)*7, 100+(starting_index+i)*7, (75,135,139))
 
         for key in freed_memory_list:
             starting_index = size - (key - self.h.HEAP_ADDRESS) - 1
             for i in range(0,freed_memory_list[key]):
-                arcade.draw_lrtb_rectangle_filled(200, 400, 100+(starting_index+i+1)*7, 100+(starting_index+i)*7, arcade.csscolor.DARK_BLUE)
+                arcade.draw_lrtb_rectangle_filled(250, 500, 100+(starting_index+i+1)*7, 100+(starting_index+i)*7, (208,28,31))
         arcade.finish_render()
 
 
 
 def main():
     game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
-    game.setup()
     game.on_draw()
     arcade.run()
 
