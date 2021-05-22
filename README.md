@@ -38,3 +38,6 @@ Refences:
 
     - for visualization i used the arcade library
     https://arcade.academy/index.html
+
+    - learning about memory allocation algorithms
+    https://www.tutorialspoint.com/operating_system/os_memory_allocation_qa2.htm

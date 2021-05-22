@@ -2,16 +2,17 @@ from __future__ import print_function
 from unicorn import *
 from unicorn.x86_const import *
 from heap import Heap
+from constants import *
 import time
 import arcade
-from constants import *
 
-class MyGame(arcade.Window):
+class Emulation(arcade.Window):
     """ Main application class. """
 
     # created the heap memory with that address and size
     h = Heap(HEAP_ADDRESS,HEAP_SIZE)
 
+    # constructor for the emulation
     def __init__(self, width, height):
         
         super().__init__(width, height)
@@ -30,7 +31,7 @@ class MyGame(arcade.Window):
         def hook_code(mu, address, size, user_data):
 
             print('>>> Tracing instruction at 0x%x, instruction size = 0x%x' %(address, size)) 
-
+            
             # when the first instruction is called, we call the function to initialize the image on the screen
             if address == 0x400000:
                 self.update_logic(self.h.HEAP_SIZE, self.h.memory_list, self.h.freed_memory_list, " ", 0)
@@ -48,6 +49,7 @@ class MyGame(arcade.Window):
                 if allocated_address == None:
                     print("We don't have enough space in the heap to alocate this space, 0 was placed in RAX")
                     mu.reg_write(UC_X86_REG_RAX,0)
+                    return
                 else:
                     # now putting that allocated address in rax, mirroring a call to malloc
                     mu.reg_write(UC_X86_REG_RAX,allocated_address)
@@ -66,13 +68,14 @@ class MyGame(arcade.Window):
                 # if the new address is not 0 then we have a problem
                 if new_address != 0:
                     print("Deallocation was unsuccessfull. Something went wrong")
+                    return
                 else:
                 # else we put 0 in RAX to be put in the stack
                     mu.reg_write(UC_X86_REG_RAX,new_address)
 
                 self.update_logic(self.h.HEAP_SIZE, self.h.memory_list, self.h.freed_memory_list,"Deallocation",free_address)
 
-            time.sleep(0.3)
+            time.sleep(0.3) # sleeping 0.3 s after every instruction so they can be more visible on the screen
         try:
             # Initialize emulator in X86-64bit mode
             mu = Uc(UC_ARCH_X86, UC_MODE_64)
@@ -92,6 +95,7 @@ class MyGame(arcade.Window):
             # emulate code in infinite time & unlimited instructions
             mu.emu_start(CODE_ADDRESS, CODE_ADDRESS + len(X86_CODE64))
 
+            # exiting the program after the instruction are done wmulating so we dont run in an infinite loop
             exit()
             
         except UcError as e:
@@ -101,39 +105,50 @@ class MyGame(arcade.Window):
 
         arcade.start_render()
         
-        if string == 'Allocation' :
+        # depending on what we need to do we modify the text
+        if string == 'Allocation':
             text = "A block of size " + str(memory_list[address]) + " has been alocated, starting at address "+ str(hex(address))
         elif string == 'Deallocation':
             text = "A block of size " + str(freed_memory_list[address]) + " has been deallocated, starting at address " + str(hex(address))
         else: 
             text = ''
 
+        # starting address and end adress of the heap
         starting_address = self.h.HEAP_ADDRESS + self.h.HEAP_SIZE - 1;
         end_address = self.h.HEAP_ADDRESS;
 
+        # drawing the text on the screen
         arcade.draw_text(text, 100, 850, (45,168,216))
         arcade.draw_text(str(hex(starting_address)),175,100,(45,168,216))
         arcade.draw_text(str(hex(end_address)), 175, 790, (45,168,216))
 
+        # drawing the free memory depicted as empty white rectangles
         for i in range(0,size):
             arcade.draw_lrtb_rectangle_outline(250, 500, 100+(i+1)*7, 100+i*7, arcade.csscolor.WHITE)
 
+        # drawing the allocations in the heap as fiiled rectangles colored blue 
         for key in memory_list:
             starting_index = size - (key - self.h.HEAP_ADDRESS) - 1
             for i in range(0,memory_list[key]):
                 arcade.draw_lrtb_rectangle_filled(250, 500, 100+(starting_index+i+1)*7, 100+(starting_index+i)*7, (75,135,139))
 
+        # drawing the deallocations in the heap as filled rectangles colored red
         for key in freed_memory_list:
             starting_index = size - (key - self.h.HEAP_ADDRESS) - 1
             for i in range(0,freed_memory_list[key]):
-                arcade.draw_lrtb_rectangle_filled(250, 500, 100+(starting_index+i+1)*7, 100+(starting_index+i)*7, (208,28,31))
+                arcade.draw_lrtb_rectangle_filled(250, 500, 100+(starting_index+i+1)*7, 100+(starting_index+i)*7, (214,65,97))
+        # finish rendering
         arcade.finish_render()
 
 
 
 def main():
-    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
-    game.on_draw()
+    
+    # creating our emulation object
+    emulator = Emulation(SCREEN_WIDTH, SCREEN_HEIGHT)
+    emulator.on_draw()
+    
+    # running the application 
     arcade.run()
 
 
