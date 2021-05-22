@@ -14,9 +14,10 @@ All to better understand how the memory is being used in a real C program
 ## **Install and run the application**
 
 <br>
-<br>
+
 
 ### **Cloning the git repository**
+<br>
 
 Clone with SSH:
 
@@ -31,6 +32,7 @@ Move into Visualication of Dynamic Memory Allocation
     cd visualization-of-dynamic-memory-allocation
 
 ### **Installing the necessary libraries and running the application**
+<br>
 
 - Make sure you have [Python](https://www.python.org/) on your computer
 
@@ -47,9 +49,11 @@ For installing the libraries for python 2 run the command:
     make install
 
 ### **Running the application**
+<br>
 
 **First we can change the heap memory allocation algorithm used by going into the heap.py file, lines 32-34
 where we can comment and uncomment depending on what algoritm we want to use**
+<br>
 
 Running the application with python 3
 
@@ -59,12 +63,16 @@ Running the application with python 2
 
     make run
 
+<br>
+
 ### **Clean up**
+<br>
 
 Run the command:
 
     make clean
 
+<br>
 
 ## **Similar Projects**
 
