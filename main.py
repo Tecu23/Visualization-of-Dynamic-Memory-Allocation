@@ -136,7 +136,8 @@ class Emulation(arcade.Window):
         for key in freed_memory_list:
             starting_index = size - (key - self.h.HEAP_ADDRESS) - 1
             for i in range(0,freed_memory_list[key]):
-                arcade.draw_lrtb_rectangle_filled(250, 500, 100+(starting_index+i+1)*7, 100+(starting_index+i)*7, (214,65,97))
+                arcade.draw_lrtb_rectangle_filled(250, 500, 100+(starting_index+i+1)*7, 100+(starting_index+i)*7, (214,65,97)) 
+  
         # finish rendering
         arcade.finish_render()
 
