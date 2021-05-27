@@ -124,7 +124,7 @@ where we can comment and uncomment depending on what algoritm we want to use**
 
 <br />
 
-<img src="images/running_application.png" alt="drawing" width="500"/>
+<img src="images/memory_all_vis.png" alt="drawing" width="500"/>
 
 
 <br />

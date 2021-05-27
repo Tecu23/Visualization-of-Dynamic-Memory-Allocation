@@ -29,9 +29,9 @@ class Heap:
             # if we used don't have enough space then we loop through the freed memory locations
             # uncomment the memory allocation algorithm of choice and comment the rest
 
-            # return_address = self.search_FIRST_FIT(size)
+            return_address = self.search_FIRST_FIT(size)
             # return_address = self.search_BEST_FIT(size)    
-            return_address = self.search_WORST_FIT(size)
+            # return_address = self.search_WORST_FIT(size)
 
             if return_address != None:
                 return return_address
