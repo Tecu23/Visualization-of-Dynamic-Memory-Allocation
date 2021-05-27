@@ -32,7 +32,7 @@ The visualization was made using the arcade library and game engine so that when
 
 <br />
 
-## **Difficulties during the project creation**
+## **Difficulties during the project's creation**
 
 <br />
 
